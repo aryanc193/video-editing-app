@@ -1,5 +1,12 @@
 # **Buttercut.ai: Video Editing App Assignment**
 
+## Repository Structure
+
+```
+/frontend   → React Native (Expo) app
+/backend    → FastAPI backend with FFmpeg rendering
+```
+
 ## Overview
 
 This app is a **scoped, end-to-end prototype** of a mobile video editing workflow:
@@ -21,21 +28,23 @@ The goal was to demonstrate **system design, async processing, and frontend–ba
 
 ## Implemented
 
-**Frontend (React Native + Expo)**
+### Frontend (React Native + Expo)
 
-* Video selection
-* Text overlay preview
-* Overlay scale & timing
-* Dedicated render screen with progress feedback
+* Video selection from device
+* Text overlay preview (centered)
+* Overlay scale and timing controls
+* Dedicated render screen
+* Render progress feedback
 * Downloadable output video
 
-**Backend (FastAPI + FFmpeg)**
+### Backend (FastAPI + FFmpeg)
 
-* Multipart upload
-* Metadata-driven rendering
-* Background render jobs
-* Status polling & result retrieval
-
+* Multipart video upload
+* Overlay metadata ingestion
+* Background render job
+* Job status polling
+* Rendered video retrieval
+  
 ---
 
 ## Intentional Constraints
@@ -45,6 +54,85 @@ The goal was to demonstrate **system design, async processing, and frontend–ba
 * Single overlay at a time
 
 These were deliberate choices to avoid fragile behavior and keep the system stable.
+
+---
+
+## API Endpoints
+
+### `POST /upload`
+
+Uploads video and overlay metadata.
+
+**Request**
+
+* Multipart form:
+
+  * `video` (file)
+  * `overlay` (JSON string)
+
+**Overlay Example**
+
+```json
+{
+  "type": "text",
+  "content": "Hello Buttercut",
+  "position": { "x": 0.5, "y": 0.5 },
+  "scale": 1,
+  "start_time": 1,
+  "end_time": 4
+}
+```
+
+**Response**
+
+```json
+{ "job_id": "uuid-string" }
+```
+
+---
+
+### `GET /status/{job_id}`
+
+**Response**
+
+```json
+{
+  "status": "queued | processing | completed"
+}
+```
+
+---
+
+### `GET /result/{job_id}`
+
+Returns the rendered video file.
+
+---
+
+## Running the Project
+
+### Backend
+
+Requirements:
+
+* Python 3.9+
+* FFmpeg installed and available in PATH
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+---
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npx expo start
+```
 
 ---
 
@@ -100,7 +188,23 @@ This pipeline can be extended without re-architecture.
 
 ## Final Note
 
-This project prioritizes **clarity, correctness, and scope control** over feature count.
-It reflects how I ship under real constraints: build something stable, explain tradeoffs clearly, and leave room to grow.
+This app demonstrates how I approach real engineering tasks:
 
+- scope deliberately
+- ship a coherent system
+- document tradeoffs clearly
+- leave room for extension
 ---
+
+
+## Demo Video
+
+A short screen recording demonstrating:
+
+* Video upload
+* Overlay preview
+* Render process
+* Final download
+
+📹 **Demo + Rendered Output:**
+👉 *(Public drive link here)*
