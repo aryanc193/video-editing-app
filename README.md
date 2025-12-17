@@ -206,5 +206,5 @@ A short screen recording demonstrating:
 * Render process
 * Final download
 
-📹 **Demo + Rendered Output:**
-👉 *(Public drive link here)*
+### **Demo + Rendered Output:**
+[Public drive link here](https://drive.google.com/drive/u/2/folders/1HdJZMnO9rBP3srDjNL-5dNw3C4vaxUEk)
