@@ -4,7 +4,7 @@ import VideoPicker from "../components/VideoPicker";
 export default function Home() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Buttercut</Text>
+      <Text style={styles.title}>ButtercutAI</Text>
       <Text style={styles.subtitle}>
         Simple, focused video overlays
       </Text>

@@ -1,64 +1,106 @@
-# Buttercut.ai – Video Editing Assignment
+# **Buttercut.ai: Video Editing App Assignment**
 
 ## Overview
-This project is a simplified end-to-end prototype of a video editing workflow:
-upload → overlay editing → backend processing → result download.
 
-The scope is intentionally limited to demonstrate architecture, UX flow, and backend job handling.
+This app is a **scoped, end-to-end prototype** of a mobile video editing workflow:
 
----
+**select video → preview overlay → backend render job → downloadable output**
 
-## Features Implemented
-- Video selection on mobile
-- Text overlay with drag positioning
-- Overlay timing (start / end)
-- Frontend-only preview
-- Backend job lifecycle (queued → processing → completed)
-- Downloadable result video (stubbed)
+The goal was to demonstrate **system design, async processing, and frontend–backend coordination**, not to build a full editor.
 
 ---
 
-## Features Stubbed
-- Actual ffmpeg rendering
-- Progress percentage
-- Multiple overlay types (image / video)
-- Persistent storage
+## What This Shows
+
+* **End-to-end ownership** (mobile → API → background processing → output)
+* **Async job lifecycle** (`queued → processing → completed`)
+* **Clear UX separation** between editing and rendering
+* **Pragmatic engineering decisions** under time constraints
 
 ---
 
-## Out of Scope
-- Real-time rendering
-- Timeline editor
-- Multiple overlays
-- Trimming / cutting
-- Audio editing
-- Authentication
-- Background workers
-- Docker
+## Implemented
+
+**Frontend (React Native + Expo)**
+
+* Video selection
+* Text overlay preview
+* Overlay scale & timing
+* Dedicated render screen with progress feedback
+* Downloadable output video
+
+**Backend (FastAPI + FFmpeg)**
+
+* Multipart upload
+* Metadata-driven rendering
+* Background render jobs
+* Status polling & result retrieval
 
 ---
 
-## Architecture Overview
-- Frontend: React Native (Expo)
-- Backend: FastAPI
-- Rendering: ffmpeg (planned, not implemented)
+## Intentional Constraints
+
+* Overlays are **centered by design** (drag repositioning scoped out)
+* Preview is frontend-only; backend render is authoritative
+* Single overlay at a time
+
+These were deliberate choices to avoid fragile behavior and keep the system stable.
 
 ---
 
-## Overlay Metadata Schema
-```json
-{
-  "id": "overlay_1",
-  "type": "text",
-  "content": "Hello Buttercut",
-  "position": { "x": 0.5, "y": 0.5 },
-  "start_time": 1,
-  "end_time": 4
-}
+## Architecture
+
+```
+Mobile App (Expo)
+   → FastAPI
+   → Background FFmpeg render
+   → Downloadable video
 ```
 
-## API Endpoints
+---
 
-- POST /upload
-- GET /status/{job_id}
-- GET /result/{job_id}
+## API
+
+* `POST /upload`
+* `GET /status/{job_id}`
+* `GET /result/{job_id}`
+
+---
+
+## Why This Is a Baseline
+
+This app is designed as a **foundation**:
+
+* Media ingestion
+* Metadata-driven rendering
+* Async job handling
+* Clear user feedback loop
+
+This pipeline can be extended without re-architecture.
+
+---
+
+## Possible Extensions
+
+* Multiple overlays & timelines
+* Accurate drag positioning
+* Audio & trimming
+* Real FFmpeg progress
+* Background queues & cloud storage
+
+### Product-Level Projects
+
+- Short-form content editor (Reels / Shorts)
+- Branded video generator
+- Automated video templating
+- Fitness / education content tools
+- Creator tooling platforms
+
+---
+
+## Final Note
+
+This project prioritizes **clarity, correctness, and scope control** over feature count.
+It reflects how I ship under real constraints: build something stable, explain tradeoffs clearly, and leave room to grow.
+
+---

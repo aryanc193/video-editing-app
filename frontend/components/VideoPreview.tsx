@@ -1,49 +1,11 @@
-// components/VideoPreview.tsx
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Dimensions,
-  Animated,
-  PanResponder,
-} from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
 import { Video, ResizeMode } from "expo-av";
-import { useRef } from "react";
 
 const { width } = Dimensions.get("window");
 const W = width - 32;
 const H = 420;
 
-export default function VideoPreview({
-  videoUri,
-  overlay,
-  setOverlay,
-  onDuration,
-}: any) {
-  const pan = useRef(
-    new Animated.ValueXY({
-      x: overlay.position.x * W,
-      y: overlay.position.y * H,
-    })
-  ).current;
-
-  const responder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-      useNativeDriver: false,
-    }),
-    onPanResponderRelease: (_, g) => {
-      setOverlay((p: any) => ({
-        ...p,
-        position: {
-          x: g.moveX / W,
-          y: g.moveY / H,
-        },
-      }));
-    },
-  });
-
+export default function VideoPreview({ videoUri, overlay, onDuration }: any) {
   return (
     <View style={styles.wrapper}>
       <Video
@@ -53,18 +15,14 @@ export default function VideoPreview({
         shouldPlay
         isLooping
         onLoad={(status) => {
-          if (!status.isLoaded) return;
-
-          if (status.durationMillis != null) {
+          if (status.isLoaded && status.durationMillis) {
             onDuration(status.durationMillis / 1000);
           }
         }}
       />
 
-      <Animated.View
-        {...responder.panHandlers}
-        style={[styles.overlay, { transform: pan.getTranslateTransform() }]}
-      >
+      {/* CENTERED OVERLAY */}
+      <View style={styles.overlayWrapper}>
         {overlay.type === "text" ? (
           <Text style={[styles.text, { fontSize: 22 * overlay.scale }]}>
             {overlay.content}
@@ -73,6 +31,7 @@ export default function VideoPreview({
           overlay.imageUri && (
             <Image
               source={{ uri: overlay.imageUri }}
+              resizeMode="contain"
               style={{
                 width: 80 * overlay.scale,
                 height: 80 * overlay.scale,
@@ -80,7 +39,7 @@ export default function VideoPreview({
             />
           )
         )}
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -98,9 +57,18 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  overlay: {
+
+  // THIS guarantees true center
+  overlayWrapper: {
     position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   text: {
     color: "#fff",
     backgroundColor: "rgba(0,0,0,0.4)",
